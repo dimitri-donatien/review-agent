@@ -8,7 +8,7 @@ export class OllamaAgent {
    * Initialise l'agent avec le nom du modèle Ollama à utiliser.
    * @param model Nom du modèle configuré dans Ollama (ex. "gpt-code-review")
    */
-  constructor(model = process.env.OLLAMA_MODEL || "deepseek-r1") {
+  constructor(model = process.env.OLLAMA_MODEL || "gemma3") {
     this.model = model;
   }
 

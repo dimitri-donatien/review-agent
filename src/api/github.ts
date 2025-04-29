@@ -8,7 +8,7 @@ export class GitHubAPI {
     token = token || process.env.GH_TOKEN!;
     this.octokit = new Octokit({
       auth: token,
-      userAgent: process.env.OLLAMA_MODEL || "deepseek-r1",
+      userAgent: process.env.OLLAMA_MODEL || "gemma3",
       previews: ["diffviewer"], // si besoin de previews GitHub
     });
   }
