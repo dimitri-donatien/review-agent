@@ -1,0 +1,40 @@
+{
+  "name": "ai-code-review-agent",
+  "version": "1.0.0",
+  "description": "Agent IA pour la revue de code TypeScript via GitHub/GitLab",
+  "main": "dist/cli/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli/index.js",
+    "dev": "ts-node src/cli/index.ts",
+    "test": "jest",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "axios": "^1.6.0",
+    "dotenv": "^16.5.0",
+    "git-diff-parser": "^1.0.0",
+    "inquirer": "^9.3.7",
+    "parse-diff": "^0.11.1",
+    "winston": "^3.17.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@types/git-diff-parser": "^1.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/jest": "^29.0.0",
+    "@types/node": "^20.0.0",
+    "@types/yargs": "^17.0.33",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0",
+    "typescript-eslint": "^8.31.1"
+  },
+  "engines": {
+    "node": ">=18.12.0"
+  }
+}
