@@ -1,5 +1,5 @@
 {
-  "name": "ai-code-review-agent",
+  "name": "review-agent",
   "version": "1.0.0",
   "description": "Agent IA pour la revue de code TypeScript via GitHub/GitLab",
   "main": "dist/cli/index.js",
