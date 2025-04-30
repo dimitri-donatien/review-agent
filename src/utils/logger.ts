@@ -1,12 +1,13 @@
-import winston from "winston";
+import pino from "pino";
 
-export const logger = winston.createLogger({
+export const logger = pino({
   level: process.env.LOG_LEVEL || "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message }) => {
-      return `${timestamp} [${level.toUpperCase()}] ${message}`;
-    })
-  ),
-  transports: [new winston.transports.Console()],
+  transport: {
+    target: "pino-pretty",
+    options: { colorize: true, translateTime: "SYS:standard" },
+  },
+  base: {
+    pid: false,
+    hostname: false,
+  },
 });
