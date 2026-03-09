@@ -1,67 +1,69 @@
 # Code Review Agent
 
-L’AI Code Review Agent est un outil CLI TypeScript qui automatise la revue de code sur GitHub et GitLab grâce à un modèle LLM local (Ollama). Il analyse les diffs, la documentation et les messages de commit pour proposer des suggestions : style, performance, sécurité, documentation et architecture. Ce README agit comme une vitrine complète du projet, facilitant la première prise en main pour tout contributeur ou utilisateur.
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.12.0-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/badge/SCM-GitHub-181717?logo=github)](https://github.com/dimitri-donatien/review-agent)
+[![GitLab](https://img.shields.io/badge/SCM-GitLab-FC6D26?logo=gitlab&logoColor=white)](#)
+[![Ollama](https://img.shields.io/badge/LLM-Ollama-000000?logo=ollama&logoColor=white)](https://ollama.com/)
+[![pnpm](https://img.shields.io/badge/pnpm-%3E%3D8-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![ESLint](https://img.shields.io/badge/Linter-ESLint-4B32C3?logo=eslint&logoColor=white)](https://eslint.org/)
 
-## Fonctionnalités
+AI Code Review Agent is a TypeScript CLI tool that automates code review on GitHub and GitLab using a local LLM (Ollama). It analyzes diffs, documentation, and commit messages to provide suggestions on style, performance, security, documentation, and architecture.
 
-- Connexion multi‐SCM : GitHub (via Octokit) et GitLab (API REST).
-- Analyse IA contextuelle : prompts structurés, few‐shot examples, sortie JSON pour intégration continue.
-- Commentaires interactifs : sélection des suggestions en CLI avant publication.
-- Sandbox Docker : exécution isolée du LLM pour limiter les risques de sécurité.
-- Extensible & configurable : critères de revue activables/désactivables via JSON.
-- Support multi‐langage : TypeScript, Python, Java, etc.
+## Features
 
-## Architecture du projet
+- **Multi-SCM support**: GitHub (via Octokit) and GitLab (REST API).
+- **Contextual AI analysis**: structured prompts with few-shot examples and JSON output for CI integration.
+- **Interactive comments**: select which suggestions to publish via CLI before posting.
+- **Multi-language support**: TypeScript, Python, Java, and more.
+- **Extensible & configurable**: review criteria can be toggled via configuration.
 
-```bash
-/docker
-  ├─ Dockerfile
-  └─ entrypoint.sh
-/src
-  /api
-    ├─ github.ts
-    └─ gitlab.ts
-  /ai
-    ├─ ollamaAgent.ts
-    └─ prompts.ts
-  /review
-    ├─ diffParser.ts
-    └─ reviewer.ts
-  /cli
-    └─ index.ts
-  /config
-    ├─ default.json
-    └─ schema.json
-  /utils
-    ├─ logger.ts
-    └─ sandbox.ts
-/tests
-  ├─ api.github.test.ts
-  ├─ api.gitlab.test.ts
-  ├─ ai.ollamaAgent.test.ts
-  ├─ review.reviewer.test.ts
-  └─ cli.integration.test.ts
-package.json  
-tsconfig.json  
+## Project Structure
+
+```md
+src/
+  ai/
+    ollamaAgent.ts    # Ollama LLM wrapper - sends diffs for AI review
+    prompts.ts        # Builds structured review prompts (JSON output)
+  api/
+    github.ts         # GitHub API client (list PRs, get diffs, post comments)
+    gitlab.ts         # GitLab API client (list MRs, get diffs, post comments)
+  cli/
+    index.ts          # Main CLI entry point (yargs)
+  review/
+    diffParser.ts     # Unified diff parser (parse-diff wrapper)
+    reviewer.ts       # Orchestrator: diff -> AI analysis -> formatted feedback
+  utils/
+    logger.ts         # Winston-based logging (LOG_LEVEL configurable)
+eslint.config.mjs
+package.json
+tsconfig.json
 README.md
 ```
 
+## Requirements
+
+- **Node.js** >= 18.12.0
+- **pnpm** (package manager)
+- **Ollama** installed and running locally
+
 ## Installation
 
-1. Cloner le dépôt et installer les dépendances.
+1. Clone the repository:
 
 ```bash
-git clone https://github.com/dimitri-donatien/cli-etl.git
-cd cli-etl
+git clone https://github.com/dimitri-donatien/review-agent.git
+cd review-agent
 ```
 
-2. Installer les dépendances
+1. Install dependencies:
 
 ```bash
 pnpm install
 ```
 
-3. Compiler le TypeScript
+1. Compile TypeScript:
 
 ```bash
 pnpm build
@@ -69,59 +71,64 @@ pnpm build
 
 ## Configuration
 
-1. Copier et adapter /config/default.json
-
-2. Vérifier la conformité via le schéma /config/schema.json
-
-3. Définir les variables d’environnement :
+Set the following environment variables:
 
 ```bash
-export GH_TOKEN="votre_pat_github"
-export GL_TOKEN="votre_pat_gitlab"
-export OLLAMA_MODEL="gpt-code-review"
+export GH_TOKEN="your_github_pat"
+export GL_TOKEN="your_gitlab_pat"
+export OLLAMA_MODEL="deepseek-r1"
 export LOG_LEVEL="info"
 ```
 
-## Utilisation
+| Variable | Description | Default |
+|---|---|---|
+| `GH_TOKEN` | GitHub personal access token | - |
+| `GL_TOKEN` | GitLab personal access token | - |
+| `OLLAMA_MODEL` | Ollama model to use for review | `deepseek-r1` |
+| `LOG_LEVEL` | Logging level (`debug`, `info`, `warn`, `error`) | `info` |
 
-Commande principale
+## Usage
 
 ```bash
 node dist/cli/index.js --github-owner <owner> --github-repo <repo> [--gitlab-project <project>] [--dry-run]
 ```
 
-- --github-owner / --github-repo : cible GitHub
+| Option | Description |
+|---|---|
+| `--github-owner` | GitHub repository owner |
+| `--github-repo` | GitHub repository name |
+| `--gitlab-project` | GitLab project path (e.g. `owner/repo`) |
+| `--dry-run` | Preview review comments without posting them |
 
-- --gitlab-project : cible GitLab
+You can also run directly without compiling:
 
-- --dry-run : affiche sans poster les commentaires
+```bash
+pnpm dev -- --github-owner <owner> --github-repo <repo>
+```
 
-## Exemple d’utilisation
+### Example
 
 ```bash
 node dist/cli/index.js \
   --github-owner dimitri-donatien \
-  --github-repo cli-etl \
-  --gitlab-project dimitri-donatien/cli-etl \
+  --github-repo review-agent \
+  --gitlab-project dimitri-donatien/review-agent \
   --dry-run
 ```
 
-## Contribuer
+## Contributing
 
-Les contributions sont les bienvenues !
+Contributions are welcome!
 
-1. Forkez le projet
-
-2. Créez une branche feature/ma-feature
-
-3. Soumettez un PR détaillé et passez les tests
-
-Pour finir, merge après revue.
+1. Fork the project
+2. Create a feature branch (`feature/my-feature`)
+3. Submit a detailed PR and make sure all checks pass
+4. Merge after review
 
 ## Support
 
-Pour signaler un bug ou proposer une amélioration, ouvrez une issue sur GitHub. Pour toute question, contactez [donatien.dim@gmail.com].
+To report a bug or suggest an improvement, open an issue on GitHub. For questions, reach out at [donatien.dim@gmail.com].
 
-## Licence
+## License
 
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+This project is licensed under the MIT License.
